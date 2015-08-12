@@ -40,10 +40,8 @@ comparisons = [
     'id': 'contract-procedure',
     'compare': 'TIPO_PROCEDIMIENTO',
     'slices': [
-      {'id': 'lic-publica-osd', 'label': 'Licitación Pública con OSD', 'field': 'Licitacion Publica con OSD'},
       {'id': 'lic-publica', 'label': 'Licitación Pública', 'field': 'Licitacion Publica'},
       {'id': 'adj-directa', 'label': 'Adjudicación Directa Federal', 'field': 'Adjudicacion Directa Federal'},
-      {'id': 'lic-estatal', 'label': 'Licitación Publica Estatal', 'field': 'Licitacion Publica Estatal'},
       {'id': 'invitacion', 'label': 'Invitación a Cuando Menos 3 Personas', 'field': 'Invitacion a Cuando Menos 3 Personas'}
     ]
   },

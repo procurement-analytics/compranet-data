@@ -1,4 +1,5 @@
 # Settings - prep Compranet
+# -*- coding: latin-1 -*-
 
 
 #####################################################################
@@ -37,3 +38,17 @@ xrate = {
   "2011": 12.42,
   "2010": 12.64
 }
+
+
+#####################################################################
+### Mapping
+
+# This is a generic mapper, mapping values from a particular column
+# in the dataset
+
+mapping = {
+            "TIPO_PROCEDIMIENTO": {
+              "Licitación Pública con OSD": "Licitación Pública",
+              "Licitación Publica Estatal": "Licitación Pública"
+            }
+          }
