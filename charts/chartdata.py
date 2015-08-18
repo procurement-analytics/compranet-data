@@ -7,6 +7,8 @@
 import pandas as pd
 import numpy as np
 
+import sys
+
 import settings
 
 
@@ -187,14 +189,16 @@ def average_timeline(df):
                 }
 
   # Prep the dataframe
-  p1 = df['FECHA_APERTURA_PROPOSICIONES'] - df['PROC_F_PUBLICACION']
-  p2 = df['EXP_F_FALLO'] - df['FECHA_APERTURA_PROPOSICIONES']
-  p3 = df['FECHA_INICIO'] - df['EXP_F_FALLO']
+
+  # To calculate a correct mean, we convert the timedelta to hours
+  p1 = (df['FECHA_APERTURA_PROPOSICIONES'] - df['PROC_F_PUBLICACION']).astype('timedelta64[h]')
+  p2 = (df['EXP_F_FALLO'] - df['FECHA_APERTURA_PROPOSICIONES']).astype('timedelta64[h]')
+  p3 = (df['FECHA_INICIO'] - df['EXP_F_FALLO']).astype('timedelta64[h]')
 
   # Calculate the data
-  chart_data['data'].append(p1.mean().days)
-  chart_data['data'].append(p2.mean().days)
-  chart_data['data'].append(p3.mean().days)
+  chart_data['data'].append(int(p1.mean() / 24))
+  chart_data['data'].append(int(p2.mean() / 24))
+  chart_data['data'].append(int(p3.mean() / 24))
 
   return chart_data
 
