@@ -1,4 +1,5 @@
 # Compranet OCDS
+# -*- coding: latin-1 -*-
 
 import os
 import numpy
@@ -123,7 +124,7 @@ def str_id(df,col):
     Dataframe
   :param col:
     Column in the dataframe
-  :type full:
+  :type col:
     String
 
   :returns:
@@ -135,15 +136,61 @@ def str_id(df,col):
   return df
 
 
+def map_value(value,field):
+  """
+  Returns the mapped value
+
+  :param value:
+    The field to be mapped
+  :type value:
+    String
+  :param field:
+    Column in the dataframe
+  :type field:
+    String
+
+  :returns:
+    String
+  """
+  try:
+    return settings.mapping[field][value]
+  except KeyError:
+    return value
+  
+
+def map_field(df,col):
+  """
+  Map the values of a field to something else 
+
+  :param df:
+    Pandas dataframe
+  :type args:
+    Dataframe
+  :param col:
+    Column in the dataframe
+  :type col:
+    String
+
+  :returns:
+    Dataframe
+  """
+
+  df[col] = df.apply(lambda row: map_value(row[col],col), axis=1)
+  
+  return df
+
+
+# These define the actions to be taken on each of the columns. It is possible
+# to specify multiple sequential actions
 clean_action = {
   'GOBIERNO': None,
   'SIGLAS': None,
   'DEPENDENCIA': None,
   'CLAVEUC': None,
   'NOMBRE_DE_LA_UC': None,
-  'RESPONSABLE': drop,
+  'RESPONSABLE': [drop],
   'NUMERO_EXPEDIENTE': None,
-  'TITULO_EXPEDIENTE': proper_string,
+  'TITULO_EXPEDIENTE': [proper_string],
   'PLANTILLA_EXPEDIENTE': None,
   'NUMERO_PROCEDIMIENTO': None,
   'EXP_F_FALLO': None,
@@ -152,14 +199,14 @@ clean_action = {
   'CARACTER': None,
   'TIPO_CONTRATACION': None,
    # in future, map this to OCDS values
-  'TIPO_PROCEDIMIENTO': str_id,
+  'TIPO_PROCEDIMIENTO': [map_field, str_id],
   'FORMA_PROCEDIMIENTO': None,
   'CODIGO_CONTRATO': None,
-  'TITULO_CONTRATO': proper_string,
+  'TITULO_CONTRATO': [proper_string],
   'FECHA_INICIO': None,
   'FECHA_FIN': None,
-  'IMPORTE_CONTRATO': currency_convert,
-  'MONEDA': drop,
+  'IMPORTE_CONTRATO': [currency_convert],
+  'MONEDA': [drop],
   'ESTATUS_CONTRATO': None,
   'ARCHIVADO': None,
   'RAMO': None,
@@ -167,14 +214,14 @@ clean_action = {
   'APORTACION_FEDERAL': None,
   'FECHA_CELEBRACION': None,
   'CONTRATO_MARCO': None,
-  'COMPRA_CONSOLIDADA': drop,
-  'PLURIANUAL': drop,
+  'COMPRA_CONSOLIDADA': [drop],
+  'PLURIANUAL': [drop],
   'CLAVE_CARTERA_SHCP': None,
   'ESTRATIFICACION_MUC': None,
-  'PROVEEDOR_CONTRATISTA': proper_string,
+  'PROVEEDOR_CONTRATISTA': [proper_string],
   'ESTRATIFICACION_MPC': None,
   'ESTATUS_EMPRESA': None,
-  'CUENTA_ADMINISTRADA_POR': drop,
+  'CUENTA_ADMINISTRADA_POR': [drop],
   'ANUNCIO': None
 }
 
@@ -202,7 +249,8 @@ def clean_csv(source_data):
 
     for key in clean_action:
       if clean_action[key]:
-        df = clean_action[key](df,key)
+        for action in clean_action[key]:
+          df = action(df,key)
 
     if first:
       # Write the header
