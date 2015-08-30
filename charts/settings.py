@@ -13,7 +13,7 @@ folder_charts = './data/export/charts'
 # This is used to date the contracts for the charts on the summary page
 main_date_contract = 'FECHA_INICIO'
 start_date_charts = '2011-01-01'
-end_date_charts = '2015-06-30'
+end_date_charts = '2015-07-31'
 
 # Currency to use. Either USD / MXN
 desired_currency = "MXN"
