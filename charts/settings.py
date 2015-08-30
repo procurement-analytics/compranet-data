@@ -54,6 +54,17 @@ comparisons = [
       {'id': 'medium-supplier', 'label': 'Medium', 'field': 'Mediana'},
       {'id': 'big-supplier', 'label': 'No SME', 'field': 'No MIPYME'}
     ]
+  },
+  { 
+    'id': 'contract-type',
+    'compare': 'TIPO_CONTRATACION',
+    'slices': [
+      {'id': 'adquisiciones', 'label': 'Adquisiciones', 'field': 'Adquisiciones'},
+      {'id': 'op', 'label': 'Obra Pública', 'field': 'Obra Pública'},
+      {'id': 'servicios', 'label': 'Servicios', 'field': 'Servicios'},
+      {'id': 'servicios-op', 'label': 'Servicios Relacionados con la OP', 'field': 'Servicios Relacionados con la OP'},
+      {'id': 'arrendamientos', 'label': 'Arrendamientos', 'field': 'Arrendamientos'}
+    ]
   }
 ]
 
