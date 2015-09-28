@@ -1,15 +1,8 @@
 # Procurement Analytics data
-This project processes data from Compranet - a dataset of federal procurement processes from Mexico - and prepares it to be used by [Procurement Analytics](https://github.com/procurement-analytics/procurement-analytics)
+This project processes data from Compranet - a dataset of federal procurement processes from Mexico - and stores it as OCDS records. These records are used to power the dashboards of the [Procurement Analytics](https://github.com/procurement-analytics/procurement-analytics) project.
 
-This repository contains two scripts that are usually run in sequence:
-
-1. `prep-compranet.py`
-Fetch the latest data and perform cleanup on the CSV files
-2. `procurement-charts.py`
-Use the CSV files from `prep-compranet.py` to build the JSON with aggregate data that powers the dashboards
-
-## 1. Process Compranet data
-This script downloads data from the Compranet site and performs cleanup. By default the script will use cached data, but can also download fresh data from the Compranet site, or use a set of sample data.
+## Process Compranet data
+The `compranet-ocds.py` script downloads data from the Compranet site, performs cleanup, and transforms it into OCDS records. By default the script will use cached data, but it can also download fresh data from the Compranet site, or use a set of sample data.
 
 ```
 -d, --download    Force a download of the latest data. If not passed,
@@ -19,8 +12,4 @@ This script downloads data from the Compranet site and performs cleanup. By defa
                   development.
 ```
 
-## 2. Prepare the aggregate data
-This can be run on the CSV files produced by `prep-compranet.py`.
-
-# OCDS support
-There are plans to have the first script output the data in OCDS format. The `procurement-charts.py` would then read the OCDS records and potentially be used for other datasets that follow the OCDS standard.
+The script will output 1 json file per OCDS record.

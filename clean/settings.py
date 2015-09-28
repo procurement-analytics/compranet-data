@@ -48,7 +48,23 @@ xrate = {
 
 mapping = {
             "TIPO_PROCEDIMIENTO": {
-              "Licitación Pública con OSD": "Licitación Pública",
-              "Licitación Publica Estatal": "Licitación Pública"
+              "Licitación Pública con OSD": "open",
+              "Licitación Publica Estatal": "open",
+              "Licitación Pública": "open",
+              "Invitación a Cuando Menos 3 Personas": "selective",
+              "Adjudicación Directa Federal": "limited"
+            },
+            "FORMA_PROCEDIMIENTO": {
+              "Electrónica": "electronicSubmission",
+              "Presencial": "inPerson",
+              "Presencial (Estatal)": "inPerson",
+              # mixed is a custom category, which is allowed for this field
+              "Mixta": "mixed",
+              "Mixta (Estatal)": "mixed"
+            },
+            "ESTATUS_CONTRATO": {
+              "Activo": "active",
+              "Terminado": "terminated",
+              "Expirado": "terminated"
             }
           }
