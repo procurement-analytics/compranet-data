@@ -28,41 +28,56 @@ def generate_json(df):
 
   check_create_folder(settings.folder_ocds_json)
 
-  # Group the Compranet contracts by procedimiento. Each procedimiento outputs a JSON file
-  grouped_df = df.groupby('NUMERO_PROCEDIMIENTO')
+  # Group the Compranet by date
+  df['group_date'] = df[settings.grouping_date].convert_objects(convert_dates='coerce')
+  grouped_df = df.set_index('group_date').groupby(pd.TimeGrouper(freq='M'))
 
-  for procedure, records in grouped_df:
-    file_name = os.path.join(settings.folder_ocds_json, str(procedure) + '.json')
+  for month, records in grouped_df:
+    # Group the Compranet contracts by procedimiento. Each procedimiento outputs a JSON file
+    grouped_records = records.groupby('NUMERO_PROCEDIMIENTO')
 
-    with open(file_name,'w') as outfile:
+    package = {
+      "uri": "http://example.com/" + str(month),
+      "publishedDate": str(month),
+      "records": [],
+      "publisher": {
+        "identifier": "100",
+        "name": "Compranet"
+      },
+      "packages": []
+    }
+
+    for procedure, data in grouped_records:
+      
       # Store all data of the procedure
       # Since this is common for all procedures, fetch the data for the first result
       r = {
+        'ocid': 'ocds-123456789-0-' + str(procedure),
         'buyer': {
-          'type': records.iloc[0]['GOBIERNO'],
-          'abbreviation': records.iloc[0]['SIGLAS'],
-          'name': records.iloc[0]['DEPENDENCIA']
+          'type': data.iloc[0]['GOBIERNO'],
+          'abbreviation': data.iloc[0]['SIGLAS'],
+          'name': data.iloc[0]['DEPENDENCIA']
         },
         'tender': {
           'id': procedure,
           'procuringEntity': {
-            'id': records.iloc[0]['CLAVEUC'],
-            'name': records.iloc[0]['NOMBRE_DE_LA_UC'],
-            'contactPoint': { 'name': records.iloc[0]['RESPONSABLE'] }
+            'id': data.iloc[0]['CLAVEUC'],
+            'name': data.iloc[0]['NOMBRE_DE_LA_UC'],
+            'contactPoint': { 'name': data.iloc[0]['RESPONSABLE'] }
           },
-          'tenderPeriod': { 'startDate': records.iloc[0]['FECHA_APERTURA_PROPOSICIONES'] },
-          'eligibilityCriteria': records.iloc[0]['CARACTER'],
-          'description': records.iloc[0]['TIPO_CONTRATACION'],
-          'procurementMethod': records.iloc[0]['TIPO_PROCEDIMIENTO'],
-          'submissionMethod': records.iloc[0]['FORMA_PROCEDIMIENTO'],
-          'documents': [ {'documentType': 'tenderNotice', 'url': records.iloc[0]['ANUNCIO']} ]
+          'tenderPeriod': { 'startDate': data.iloc[0]['FECHA_APERTURA_PROPOSICIONES'] },
+          'eligibilityCriteria': data.iloc[0]['CARACTER'],
+          'description': data.iloc[0]['TIPO_CONTRATACION'],
+          'procurementMethod': data.iloc[0]['TIPO_PROCEDIMIENTO'],
+          'submissionMethod': data.iloc[0]['FORMA_PROCEDIMIENTO'],
+          'documents': [ {'documentType': 'tenderNotice', 'url': data.iloc[0]['ANUNCIO']} ]
         },
         'awards': [],
         'contracts': []
       }
 
       icontract = 1
-      for i, row in records.iterrows():
+      for i, row in data.iterrows():
         # Each row contains data about an expediente & contract
 
         # OCDS expects a unique ID for every award. NUMERO_EXPEDIENTE is not unique, hence
@@ -90,4 +105,9 @@ def generate_json(df):
 
         icontract += 1
 
-      json.dump(r, outfile)
+      package['records'].append(r)
+
+    m = month.strftime("%Y%m%d")
+    file_name = os.path.join(settings.folder_ocds_json, m + '.json')
+    with open(file_name,'w') as outfile:
+      json.dump(package, outfile)

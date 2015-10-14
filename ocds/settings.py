@@ -6,3 +6,4 @@
 ### Project structure
 
 folder_ocds_json = 'data/export/ocds'
+grouping_date = 'FECHA_INICIO'
