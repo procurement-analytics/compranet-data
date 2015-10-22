@@ -14,16 +14,17 @@ import zipfile
 from homura import download
 
 from clean import clean, settings
+from ocds import ocds
 
 from utils.mixins import VerbosityMixin
 from utils.utils import check_create_folder, clean_folder, exit, get_filename, timer, list_files, remove_folder
 
 
-DESCRIPTION = """A tool to process Mexican procurement data from Compranet for use 
-  in the Procurement Analytics project.
+DESCRIPTION = """A tool to fetch Mexican procurement data from Compranet and
+  transform it into OCDS format.
 
   Commands:
-    prep-compranet.py [-s, --sample | -d, --download]
+    compranet-ocds.py [-s, --sample | -d, --download]
 
     optional arguments:
       -s, --sample        Use sample data.
@@ -129,8 +130,13 @@ def main(args):
     source_data = list_files(pattern)
 
     if source_data:
+
       print "About to clean the data"
-      clean.clean_csv(source_data)
+      clean_df = clean.clean_csv(source_data)
+      
+      print "About to store it in OCDS format"
+      ocds.generate_json(clean_df)
+
     else:
       return["No source data found. Make sure there is at least one CSV file in " + source_folder, 1]
 
