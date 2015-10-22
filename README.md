@@ -1,4 +1,4 @@
-# Procurement Analytics data
+# Compranet to OCDS
 This project processes data from Compranet - a dataset of federal procurement processes from Mexico - and stores it as OCDS records. These records are used to power the dashboards of the [Procurement Analytics](https://github.com/procurement-analytics/procurement-analytics) project.
 
 This purpose of this project is to show what can be done with OCDS records. The mapping of the Compranet fields to OCDS standard is therefore approximate.
