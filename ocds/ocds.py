@@ -42,6 +42,7 @@ def get_tender_data(record):
         'contactPoint': { 'name': record['RESPONSABLE'] }
       },
       'tenderPeriod': { 'startDate': record['FECHA_APERTURA_PROPOSICIONES'] },
+      'publicationDate': record['PROC_F_PUBLICACION'],
       'eligibilityCriteria': record['CARACTER'],
       'description': record['TIPO_CONTRATACION'],
       'procurementMethod': record['TIPO_PROCEDIMIENTO'],

@@ -59,13 +59,13 @@ The dependencia is mapped to the buyer, the unidad de compra to the procuring en
 ### New OCDS fields
 To be able to include certain Compranet fields that are necessary for the dashboards, this script adds a couple of new fields to the OCDS:
 
-- level of government
-- abbreviation of the buyer
-- abbreviation of the procuring entity
-- size supplier on the suppliers array of the award
+- `buyer -> type` - the level of government
+- `buyer -> abbreviation` - the abbreviation of the buyer
+- `tender -> procuringEntity -> abbreviation` abbreviation of the procuring entity
+- `tender -> publicationDate` the publication date of the tender
+- `award -> suppliers -> sizeSupplier`
 
 ### Still to be mapped
 The following fields are not mapped to OCDS yet, but are necessary for the procurement dashboards:
 
 - where to store type contract (Service / Obra Publica / etc) Categories seem to generic for the item classification
-- where to fit GOBIERNO and PROC_F_PUBLICACION
