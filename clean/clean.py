@@ -36,7 +36,7 @@ def drop(df,col):
 
 def proper_string(df,col):
   """
-  Titlecase a string
+  Capitalize a string
 
   :param df:
     Pandas dataframe
@@ -188,39 +188,38 @@ clean_action = {
   'DEPENDENCIA': None,
   'CLAVEUC': None,
   'NOMBRE_DE_LA_UC': None,
-  'RESPONSABLE': [drop],
+  'RESPONSABLE': None,
   'NUMERO_EXPEDIENTE': None,
   'TITULO_EXPEDIENTE': [proper_string],
-  'PLANTILLA_EXPEDIENTE': None,
+  'PLANTILLA_EXPEDIENTE': [drop],
   'NUMERO_PROCEDIMIENTO': None,
   'EXP_F_FALLO': None,
   'PROC_F_PUBLICACION': None,
   'FECHA_APERTURA_PROPOSICIONES': None,
   'CARACTER': None,
   'TIPO_CONTRATACION': None,
-   # in future, map this to OCDS values
-  'TIPO_PROCEDIMIENTO': [map_field, str_id],
-  'FORMA_PROCEDIMIENTO': None,
+  'TIPO_PROCEDIMIENTO': [map_field],
+  'FORMA_PROCEDIMIENTO': [map_field],
   'CODIGO_CONTRATO': None,
   'TITULO_CONTRATO': [proper_string],
   'FECHA_INICIO': None,
   'FECHA_FIN': None,
   'IMPORTE_CONTRATO': [currency_convert],
-  'MONEDA': [drop],
-  'ESTATUS_CONTRATO': None,
-  'ARCHIVADO': None,
-  'RAMO': None,
-  'CLAVE_PROGRAMA': None,
-  'APORTACION_FEDERAL': None,
+  'MONEDA': None,
+  'ESTATUS_CONTRATO': [map_field],
+  'ARCHIVADO': [drop],
+  'RAMO': [drop],
+  'CLAVE_PROGRAMA': [drop],
+  'APORTACION_FEDERAL': [drop],
   'FECHA_CELEBRACION': None,
-  'CONTRATO_MARCO': None,
+  'CONTRATO_MARCO': [drop],
   'COMPRA_CONSOLIDADA': [drop],
   'PLURIANUAL': [drop],
-  'CLAVE_CARTERA_SHCP': None,
+  'CLAVE_CARTERA_SHCP': [drop],
   'ESTRATIFICACION_MUC': None,
   'PROVEEDOR_CONTRATISTA': [proper_string],
-  'ESTRATIFICACION_MPC': None,
-  'ESTATUS_EMPRESA': None,
+  'ESTRATIFICACION_MPC': [drop],
+  'ESTATUS_EMPRESA': [drop],
   'CUENTA_ADMINISTRADA_POR': [drop],
   'ANUNCIO': None
 }
@@ -240,8 +239,10 @@ def clean_csv(source_data):
   :example:
   
   """
-  clean_path = os.path.join(settings.folder_cleaned_cache, settings.file_cleaned)
   first = True
+  clean_path = os.path.join(settings.folder_cleaned_cache, settings.file_cleaned)
+
+  full_df = pd.DataFrame()
 
   for source_file in source_data:
 
@@ -252,13 +253,17 @@ def clean_csv(source_data):
         for action in clean_action[key]:
           df = action(df,key)
 
+    # Write the cleaned data to CSV
     if first:
       # Write the header
       header = df.columns.values.tolist()
       with open(clean_path,'w') as f:
         writer = csv.writer(f)
         writer.writerow(header)
-
     df.to_csv(clean_path, mode='a', header=0, index=0)
-
     first = False
+
+    full_df = full_df.append(df, ignore_index = True)
+
+
+  return full_df
